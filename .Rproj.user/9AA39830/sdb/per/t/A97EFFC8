@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "---\noutput:\n  html_document: default\n---\n\n```{r setup, include=FALSE}\nknitr::opts_chunk$set(echo = TRUE)\n```\n\n# Control_Conflict project\n*Sara Jahfari Oct 2017*\n\nThis reporsitory contains the behavior and connectivity code for and processed data for the Control and Conflict project run by Sara Jahfari.\n\n\n\n\n",
+    "created" : 1507025992004.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3425507337",
+    "id" : "A97EFFC8",
+    "lastKnownWriteTime" : 1507026076,
+    "last_content_update" : 1507026076377,
+    "path" : "~/Github/Control_Conflict/README.Rmd",
+    "project_path" : "README.Rmd",
+    "properties" : {
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

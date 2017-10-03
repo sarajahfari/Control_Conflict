@@ -1,0 +1,17 @@
+---
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Control_Conflict project
+*Sara Jahfari Oct 2017*
+
+This reporsitory contains the behavior and connectivity code for and processed data for the Control and Conflict project run by Sara Jahfari.
+
+
+
+
