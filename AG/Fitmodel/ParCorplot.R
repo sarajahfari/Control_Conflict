@@ -65,3 +65,8 @@ t.test(unlist(gpegpi),unlist(vm_pre),paired=T)
 #          addCoef.col = "black", number.digits = 1, number.cex = 0.6, 
 #          col = colorRampPalette(c("darkred","white","midnightblue"))(100))
 
+# set.seed(223)
+# x1 <- rnorm(100)
+# x2 <- x1 + rnorm(100,sd=0.5)
+# x3 <- x1 + x2 + rnorm(100,sd=0.5)
+# cor2pcor(cor(cbind(x1,x2,x3)))
