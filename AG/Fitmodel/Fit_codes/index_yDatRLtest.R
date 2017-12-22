@@ -3,7 +3,9 @@
 # define conditions for AG model fitting davinci
 
 # load library
-load(paste(dir_data,"/Singletrial_connectivityinputAG_RLtest.rdat",sep='')) # no-ftest
+#load(paste(dir_data,"/Singletrial_connectivityinputAG_RLtest.rdat",sep='')) # no-ftest
+load(paste(dir_data,"/singletrial_fMRIinputAG_RLtest.Rdat",sep='')) # no-ftest
+yDat=yDat.RL
 
 #################################################
 
@@ -274,6 +276,7 @@ load(paste(dir_data,"/Singletrial_connectivityinputAG_RLtest.rdat",sep='')) # no
 			eSwlR[[c]]=c(eCfR[[c]],edER[[c]]);
 			eSwl[[c]]=c(eSwlL[[c]],eSwlR[[c]])
 
+			rm(test)
 		}
 		
 	

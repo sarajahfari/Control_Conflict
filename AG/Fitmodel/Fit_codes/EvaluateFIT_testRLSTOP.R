@@ -31,26 +31,20 @@ sapply(file.sources,source,.GlobalEnv)
 # Read yDat list with single subject beta's for each trial/roi, and make index list for the conditions of interest
 source(paste(dir_excodes,'/index_yDatRLtest.R',sep=''), chdir = F)
 
-# Deze moet aangepast worden naar BIDS (of die hierboven met ook de stop gebieden hebben)
-source('~/Dropbox/scripts/CiRaS/scanner/Graph/FitRL-test/conditions_yDat_RLtest.R', chdir = TRUE)
-
-
-
 #########################################################################
 
 # these are the conditions that are evalauted seperatly in Fitmodels_draft.R	
-cond1 = list(ewwL,ewwR,ellL,ellR,eBwlL,eBwlR,eMwlL,eMwlR,eSwlL,eSwlR) # correct and incorrect trials, wl = only new pairs (not used in learning)
-names(cond1)=c('ewwL','ewwR','ellL','ellR','BwlL','BwlR','MwlL','MwlR','SwlL','SwlR')
-
+# cond1 = list(ewwL,ewwR,ellL,ellR,eBwlL,eBwlR,eMwlL,eMwlR,eSwlL,eSwlR) # correct and incorrect trials, wl = only new pairs (not used in learning)
+# names(cond1)=c('ewwL','ewwR','ellL','ellR','BwlL','BwlR','MwlL','MwlR','SwlL','SwlR')
 
 # these are the conditions that are evalauted seperatly in Fitmodels_draft.R	
-cond2 = list(eww,ell,eBwl,eMwl,eSwl) # correct and incorrect trials, wl = only new pairs (not used in learning)
-names(cond2)=c('eww','ell','eBwl','eMwl','eSwl')
+cond2 = list(ewwL,ewwR,eww,ellL,ellR,ell) # correct and incorrect trials, wl = only new pairs (not used in learning)
+names(cond2)=c('ewwL','ewwR','eww','ellL','ellR','ell')
 
 # select regions that go into graph
-MGO=c("PvmPFCNoventri" ,"preSMAsmall", 
-      "maxSTN25exc","GPe30exc","maxGPi30exc", "DLPFCposterior" ,
-      "Thalamus40exc","PstriatumNoVentri","MotorBA4")
+# MGO=c("PvmPFCNoventri" ,"preSMAsmall", 
+#       "maxSTN25exc","GPe30exc","maxGPi30exc", "DLPFCposterior" ,
+#       "Thalamus40exc","PstriatumNoVentri","MotorBA4")
 
 # select the graph nodes for connectivity network
 M0roi=c("CaudateR40exc" ,"PreSMARsmall","IFGR",
@@ -65,20 +59,20 @@ cond=cond2
 
 ########################################################################
 
-# source the models to use, these are the defined PFC-BG models to evaluate for connectivity/fits 
+# Source the Decision making models to use, these are the defined PFC-BG models to evaluate for connectivity/fits 
 #source(paste(dir_excodes,'/gomodel_draft.R',sep=''), chdir = F) 
-source(paste(dir_excodes,'/StopModel.R',sep=''), chdir = F) 
+
 # Now do the connectivity evaluation for each subject, each model/condition, to compute aic/bic and n-fits
+# fit evaluate STOP
+source(paste(dir_excodes,'/StopModel.R',sep=''), chdir = F) 
 source(paste(dir_excodes,'/Fitmodels_draft.R',sep=''), chdir = F)
 
-AMT
+
 BMT
 
-apply(BMT[,1:7],1,min)
-apply(AMT[,1:7],1,min)
 
 # in both AIC and BIC model7 is the best!
-
+save(BMT,file='/Users/sarajahfari/Github/Control_Conflict/AG/Fitmodel/_other/BICFIT_RLtestStopNetwork.Rdat')
 
 #------------------------------------------------------------------------------#
 #           Compute (indvidual) connectivity strengths winning model           #

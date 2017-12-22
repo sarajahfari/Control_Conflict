@@ -139,6 +139,16 @@ t.test(Exploit.ac[,2],Explore.ac[,2],var.equal=T) # p=0.08
 #--------------       2. Control and Conflict-induced slowing    --------------#
 
 # make data.frame where extra subjects in RL task are excluded
+# frist provide descriptives stop task
+
+# Get stop signal descriptives
+colMeans(STOP) 
+apply(STOP,2,sd)
+
+# paired t.test to evaluate horce race MRT>MSR
+t.test(STOP[,'MRT'],STOP[,'MSR'],paired=T) # valid, failed stops are faster
+
+
 # what is the relationship between control and learning
 Reg.data=data.frame(
   ll_RT=RLwl.med[-which(rownames(RLwl.med)%in%Ex.stop),'ll'],
@@ -152,23 +162,53 @@ Reg.data=data.frame(
   Beta=RL.model[[1]][-which(rownames(RL.model[[1]])%in%Ex.stop),'Beta'])
 
 
-# correlations reported results section
-cor.test(Reg.data[,'ll_RT'],Reg.data[,'SSRT'])
-cor.test(Reg.data[,'ll_slrt'],Reg.data[,'SSRT'])
-cor.test(Reg.data[,'ww_RT'],Reg.data[,'SSRT'])
-cor.test(Reg.data[,'Beta'],Reg.data[,'SSRT'])
+# robust regression
+# ll RT ~ SSRT
+robreg_stop.llrt=rlm(ll_RT~SSRT,data=Reg.data)
+reg.sum=summary(robreg_stop.llrt)
+rl.dd=data.frame(reg.sum$coefficients)
+rl.dd$pval=2*pt(abs(rl.dd$t.value),reg.sum$df[2],lower.tail=F)
+# round(rl.dd,digits=3) # p=0.002, t(41)=3.36
 
-Multi.reg1=lm(ll_RT~Beta+SSRT,data=Reg.data)
-summary(Multi.reg1)
+# ll RT ~ SSRT, with unusual SSRT subject left out
+robreg2_stop.llrt=rlm(ll_RT~SSRT,data=Reg.data[Reg.data['SSRT']<500,])
+reg2.sum=summary(robreg2_stop.llrt)
+rl2.dd=data.frame(reg2.sum$coefficients)
+rl2.dd$pval=2*pt(abs(rl2.dd$t.value),reg2.sum$df[2],lower.tail=F)
+# round(rl2.dd,digits=3) # p=0.009, t(40)=2.75
 
+# ww RT ~ SSRT
+robreg_stop.wwrt=rlm(ww_RT~SSRT,data=Reg.data)
+reg.sumww=summary(robreg_stop.wwrt)
+rl.ddww=data.frame(reg.sumww$coefficients)
+rl.ddww$pval=2*pt(abs(rl.ddww$t.value),reg.sumww$df[2],lower.tail=F)
+# round(rl.ddww,digits=3) # p=0.13, t(41)=1.57
+# also here leaving out SSRT>500 does not matter!
+
+# beta ~ SSRT
+robreg_stop.beta=rlm(Beta~SSRT,data=Reg.data)
+reg.sumbeta=summary(robreg_stop.beta)
+rl.ddbeta=data.frame(reg.sumbeta$coefficients)
+rl.ddbeta$pval=2*pt(abs(rl.ddbeta$t.value),reg.sumbeta$df[2],lower.tail=F)
+# round(rl.ddbeta,digits=3) # p=0.08, t(41)=1.82
+# also here leaving out SSRT>500 does not matter!
+
+Multi.reg1=rlm(ll_RT~Beta+SSRT,data=Reg.data)
+reg.summulti=summary(Multi.reg1)
+rl.multi=data.frame(reg.summulti$coefficients)
+rl.multi$pval=2*pt(abs(rl.multi$t.value),reg.summulti$df[2],lower.tail=F)
+# round(rl.multi,digits=3) # t(40)
 
 # ssrt and lose-lose accuracy
-cor.test(Reg.data[,'ll_ac'],Reg.data[,'SSRT'])
+robreg_stop.ll_ac=rlm(ll_ac~SSRT,data=Reg.data)
+reg.sumllac=summary(robreg_stop.ll_ac)
+rl.ddllac=data.frame(reg.sumllac$coefficients)
+rl.ddllac$pval=2*pt(abs(rl.ddllac$t.value),reg.sumllac$df[2],lower.tail=F)
+# round(rl.ddllac,digits=3) # p=0.34, t(41)=-0.97
 
 #--------------       3. The efficacy of control in the STN during full stops and slowing    --------------#
 
 # please see FIR analysis preformed by Tomas knapen
-
 
 #--------------       4. Conflict-induced slowing in cortico-basal ganglia pathways    --------------#
 
@@ -183,35 +223,44 @@ colnames(bStr.av)=c('ppn','cond','beta')
 STN=data.frame(bSTN.av,connection='STN')
 STR=data.frame(bStr.av,connection='STR')
 TOP=as.data.frame(rbind(STN,STR))
+
+
 # do anova 
 TOP.av=ezANOVA(data=TOP,dv=.(beta),within=.(cond,connection),wid=.(ppn))
 print(TOP.av) # only  main effect for connection, connectivity towards STR is stronger
 
-# how is top-down related to behavior?
+# how is top-down related to LL-behavior?
 cor.test(Connectivity$b.Topstn[,'ll'], RLwl.med[,'ll']) # yes, to LL RT
-cor.test(Connectivity$b.Topstn[,'ll'], slowing[,'diff.ll'])# yes, to LL slowing
+cor.test(Connectivity$b.Topstn[,'ll'], RLwl.med[,'ll'])$p.value -> p.llRT
+# does top-STN connectviity on LL relate to explore/exploit?
+cor.test(Connectivity$b.Topstn[,'ll'], RL.model$learn[,'Beta']) # Yes!!
+cor.test(Connectivity$b.Topstn[,'ll'], RL.model$learn[,'Beta'])$p.value -> p.betaQ
+# SSRT and hyperdirect
+cor.test(Connectivity$b.Topstn[-which(rownames(Connectivity$b.Topstn)%in%Ex.stop),'ll'], STOP[,'SSRT']) 
+cor.test(Connectivity$b.Topstn[-which(rownames(Connectivity$b.Topstn)%in%Ex.stop),'ll'], STOP[,'SSRT'])$p.value -> p.SSRT 
+
+# adjust p-values for the 3 tests run on LL PFC-into-STN connectivity
+p.adjust(p=c(p.llRT,p.betaQ, p.SSRT),method='bonferroni')
+
 
 # not observed for ww
 cor.test(Connectivity$b.Topstn[,'ww'], RLwl.med[,'ww']) # no
-cor.test(Connectivity$b.Topstn[,'ww'], slowing[,'diff.ww']) # no
+
 # or for top-striatum
 cor.test(Connectivity$b.Topstr[,'ll'], RLwl.med[,'ll']) # no
-cor.test(Connectivity$b.Topstr[,'ll'], slowing[,'diff.ll']) #no
+cor.test(Connectivity$b.Topstr[,'ll'], RL.model$learn[,'Beta']) #no
 
-cor.test(Connectivity$b.Topstn[,2], RLwl.med[,2]) 
-cor.test(Connectivity$b.Topstn[,2], slowing[,1])
 
-# does top-STN connectviity on LL relate to explore/exploit?
-cor.test(Connectivity$b.Topstn[,'ll'], RL.model$learn[,'Beta']) # Yes!!
 
-# now do a regression to evaluate explore/exploit, at the same time as RT.
-Reg.data1=data.frame(ll_RT=RLwl.med[,'ll'], 
-                     llPFC_STN=Connectivity$b.Topstn[,'ll'],
-                     llPFC_STR=Connectivity$b.Topstr[,'ll'],
-                     Beta=RL.model$learn[,'Beta'])
-
-Multi.reg2=lm(llPFC_STN ~Beta+ ll_RT,data=Reg.data1)
-summary(Multi.reg2)
+# # this part is left out in revision
+# # now do a regression to evaluate explore/exploit, at the same time as RT.
+# Reg.data1=data.frame(ll_RT=RLwl.med[,'ll'], 
+#                      llPFC_STN=Connectivity$b.Topstn[,'ll'],
+#                      llPFC_STR=Connectivity$b.Topstr[,'ll'],
+#                      Beta=RL.model$learn[,'Beta'])
+# 
+# Multi.reg2=rlm(llPFC_STN ~Beta+ ll_RT,data=Reg.data1)
+# summary(Multi.reg2)
 
 # SSRT and hyperdirect
 cor.test(Connectivity$b.Topstn[-which(rownames(Connectivity$b.Topstn)%in%Ex.stop),'ll'], STOP[,'SSRT']) 
