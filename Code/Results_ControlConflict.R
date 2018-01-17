@@ -229,6 +229,9 @@ TOP=as.data.frame(rbind(STN,STR))
 TOP.av=ezANOVA(data=TOP,dv=.(beta),within=.(cond,connection),wid=.(ppn))
 print(TOP.av) # only  main effect for connection, connectivity towards STR is stronger
 
+
+
+
 # how is top-down related to LL-behavior?
 cor.test(Connectivity$b.Topstn[,'ll'], RLwl.med[,'ll']) # yes, to LL RT
 cor.test(Connectivity$b.Topstn[,'ll'], RLwl.med[,'ll'])$p.value -> p.llRT
@@ -250,6 +253,25 @@ cor.test(Connectivity$b.Topstn[,'ww'], RLwl.med[,'ww']) # no
 cor.test(Connectivity$b.Topstr[,'ll'], RLwl.med[,'ll']) # no
 cor.test(Connectivity$b.Topstr[,'ll'], RL.model$learn[,'Beta']) #no
 
+
+# same observation with robust regression
+# Reg.data1=data.frame(ll_RT=RLwl.med[,'ll'],
+#                      llPFC_STN=Connectivity$b.Topstn[,'ll'],
+#                      llPFC_STR=Connectivity$b.Topstr[,'ll'],
+#                      Beta=RL.model$learn[,'Beta'])
+# 
+# # robust regression
+# # ll RT ~ pfc-stn
+# robreg_stn.llrt=rlm(ll_RT~llPFC_STN,data=Reg.data1)
+# reg.sum.stn=summary(robreg_stn.llrt)
+# rl.dd.stn=data.frame(reg.sum.stn$coefficients)
+# rl.dd.stn$pval=2*pt(abs(rl.dd.stn$t.value),reg.sum.stn$df[2],lower.tail=F)
+# 
+# # Beta ~ pfc-stn
+# robreg_stn.beta=rlm(Beta~llPFC_STN,data=Reg.data1)
+# reg.sum.stnb=summary(robreg_stn.beta)
+# rl.dd.stnb=data.frame(reg.sum.stnb$coefficients)
+# rl.dd.stnb$pval=2*pt(abs(rl.dd.stnb$t.value),reg.sum.stnb$df[2],lower.tail=F)
 
 
 # # this part is left out in revision
