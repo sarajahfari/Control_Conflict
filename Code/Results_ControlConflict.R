@@ -1,10 +1,10 @@
 rm(list=ls())
 #---------------      load preprocessed data files  ----------------------------#
-
+#base='/Users/sarajahfari/Github/Control_Conflict'
+#load(paste(base,'/Processed_data/Behavior_Qpar.Rdat',sep=''))
+setwd('/Users/sarajahfari/Github/Control_Conflict')
 load('./Processed_data/Behavior_Qpar.Rdat') # load summarized behavior and Qlearning estimates
 load('./AG/Fitmodel/Fit_output/ConncetivityStrength_withBIC7models_MnoF.rdat')
-
-
 #---------------        load libraries              ----------------------------#
 
 library(MASS)

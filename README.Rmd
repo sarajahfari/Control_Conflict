@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # Control_Conflict project
 *Sara Jahfari Oct 2017*
 
-This reporsitory contains processed data and cod for the behavior and connectivity results in the Control and Conflict project run by Sara Jahfari. For the FIR analysis reported on the STN please see: https://github.com/tknapen/stn_control_conflict
+This reporsitory contains processed data and code for the behavior and connectivity results in the Control and Conflict project run by Sara Jahfari. For the FIR analysis reported on the STN please see: https://github.com/tknapen/stn_control_conflict
 
 
 
